@@ -28,21 +28,7 @@ void setup() {
   
   status_message();
   M5.Lcd.printf("Getting command list...\n");
-  int httpCode;
-  
-  if (!http.begin("192.168.0.214", 6666, "/flows")) {
-    status_message();
-    Serial.println("Http client error");
-  }
-  
-  do {
-    httpCode = http.GET();
-    if (httpCode < 0) {
-      Serial.println(http.errorToString(httpCode));
-      delay(1000);
-    }
-  } while (httpCode != 0 && httpCode != HTTP_CODE_OK);
-
+  send_command("/flows");
   String jsonString = http.getString();
   Serial.println(jsonString);
   
@@ -74,7 +60,20 @@ void loop() {
 }
 
 void send_command(const char* c_name){
+  int httpCode;
   
+  if (!http.begin("192.168.0.214", 6666, c_name)) {
+    status_message();
+    Serial.println("Http client error");
+  }
+  
+  do {
+    httpCode = http.GET();
+    if (httpCode < 0) {
+      Serial.println(http.errorToString(httpCode));
+      delay(1000);
+    }
+  } while (httpCode != 0 && httpCode != HTTP_CODE_OK);
 }
 
 void status_message() {
