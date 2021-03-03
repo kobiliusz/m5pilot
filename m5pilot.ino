@@ -1,8 +1,13 @@
 #include <M5StickC.h>
+#include "creds.h"
+
+RTC_TimeTypeDef TimeStruct;
+RTC_DateTypeDef DateStruct;
 
 void setup() {
   M5.begin();
 
+  
 }
 
 void loop() {
