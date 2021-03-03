@@ -1,12 +1,11 @@
 #include <M5StickC.h>
 #include "creds.h"
 
-RTC_TimeTypeDef TimeStruct;
-RTC_DateTypeDef DateStruct;
 
 void setup() {
   M5.begin();
-
+  M5.Lcd.fillScreen(BLACK);
+  M5.Axp.ScreenBreath(7);
   
 }
 
