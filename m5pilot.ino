@@ -111,7 +111,7 @@ void redraw() {
   M5.Lcd.setTextColor(TFT_WHITE);
   M5.Lcd.println("  Menu");
 
-  for (int i=0;i<commands_size;i++) {
+  for (int i=(command_index/3)*3;i<commands_size && i<(command_index/3+1)*3;i++) {
     if (i==command_index) M5.Lcd.setTextColor(TFT_MAGENTA);
     else M5.Lcd.setTextColor(TFT_LIGHTGREY);
     const char* c_name = commands[i]["name"];
