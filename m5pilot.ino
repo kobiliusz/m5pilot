@@ -3,6 +3,7 @@
 #include <ESPmDNS.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <Ticker.h>
 #include "creds.h"
 
 
@@ -11,6 +12,7 @@ DynamicJsonDocument commands(4096);
 char ip_str[16];
 byte command_index = 0;
 byte commands_size = 0;
+Ticker timeout;
 
 void setup() {
   
@@ -49,6 +51,7 @@ void setup() {
   }
 
   redraw();
+  reset_timer();
   
 }
 
@@ -59,12 +62,22 @@ void loop() {
   if (M5.BtnA.wasPressed()) {
     command_index = ++command_index % commands_size;
     redraw();
+    reset_timer();
   }
 
   if (M5.BtnB.wasPressed()) {
     send_command(commands[command_index]["url"]);
+    reset_timer();
   }
   
+}
+
+void reset_timer() {
+  timeout.once(30, power_off);
+}
+
+void power_off() {
+  M5.Axp.DeepSleep();
 }
 
 void send_command(const char* c_name){
