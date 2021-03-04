@@ -1,5 +1,6 @@
 #include <ArduinoJson.h>
 #include <M5StickC.h>
+#include <ESPmDNS.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include "creds.h"
@@ -7,6 +8,7 @@
 
 HTTPClient http;
 DynamicJsonDocument commands(4096);
+char ip_str[16];
 byte command_index = 0;
 byte commands_size = 0;
 
@@ -28,6 +30,12 @@ void setup() {
   
   status_message();
   M5.Lcd.printf("Getting command list...\n");
+  IPAddress ip;
+  int dns_code;
+  dns_code = WiFi.hostByName(domain, ip);
+  if (dns_code != 1) ip = MDNS.queryHost(domain);
+  sprintf(ip_str, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+  Serial.println(ip_str);
   send_command("/flows");
   String jsonString = http.getString();
   Serial.println(jsonString);
@@ -62,7 +70,7 @@ void loop() {
 void send_command(const char* c_name){
   int httpCode;
   
-  if (!http.begin("192.168.0.214", 6666, c_name)) {
+  if (!http.begin(ip_str, 6666, c_name)) {
     status_message();
     Serial.println("Http client error");
   }
